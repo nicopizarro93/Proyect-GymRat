@@ -14,12 +14,22 @@ spring:
         - id: atletas-service
           uri: lb://ms-atletas
           predicates:
-            - Path=/api/atletas/**
+            - Path=/api/v1/atletas**
       
         - id: marcas-service
           uri: lb://ms-marcas
           predicates:
-            - "Path=/api/marcas/**"
+            - Path=/api/v1/marcas/**
+        
+        - id: ejercicios-service
+          uri: lb://ms-ejercicios
+          predicates:
+            - Path=/api/v1/ejercicios/**
+        
+        - id: verificaciones-service
+          uri: lb://ms-verificaciones
+          predicates:
+            - Path=/api/v1/verificaciones/**
 
 eureka:
   client:

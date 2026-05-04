@@ -17,7 +17,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/atletas")
+@RequestMapping("/api/v1/atletas")
 @RequiredArgsConstructor
 public class AtletaController {
 
