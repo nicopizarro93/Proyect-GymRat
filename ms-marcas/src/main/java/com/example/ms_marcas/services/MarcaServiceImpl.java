@@ -39,4 +39,14 @@ public class MarcaServiceImpl implements MarcaService {
         return marcaRepository.findByRutAtleta(rut);
     }
 
+    @Override
+    public List<Marca> listarTodos() {
+        return marcaRepository.findAll();
+    }
+
+    @Override
+    public Marca buscarPorId(Long id) {
+        return marcaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Marca no encontrada"));
+    }
 }

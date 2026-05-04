@@ -8,6 +8,8 @@ public interface MarcaService {
 
     Marca registrarIntento(Marca marca);
     List<Marca> obtenerPorRut(String rut);
+    List<Marca> listarTodos();  
+    Marca buscarPorId(Long id);
     
     
 }

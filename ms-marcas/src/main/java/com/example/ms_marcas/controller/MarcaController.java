@@ -18,7 +18,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/marcas")
+@RequestMapping("/api/v1/marcas")
 @RequiredArgsConstructor
 public class MarcaController {
 
@@ -34,6 +34,16 @@ public class MarcaController {
     @GetMapping("/atleta/{rut}")
     public ResponseEntity<List<Marca>> obtenerMarcasDeAtleta(@PathVariable String rut) {
         return ResponseEntity.ok(marcaService.obtenerPorRut(rut));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Marca>> listarTodasLasMarcas() {
+        return ResponseEntity.ok(marcaService.listarTodos());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Marca> buscarPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(marcaService.buscarPorId(id));
     }
 
 }
