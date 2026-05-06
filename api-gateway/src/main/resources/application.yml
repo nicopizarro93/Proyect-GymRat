@@ -30,6 +30,11 @@ spring:
           uri: lb://ms-verificaciones
           predicates:
             - Path=/api/v1/verificaciones/**
+        
+        - id: leaderboard-service
+          uri: lb://ms-leaderboard
+          predicates:
+            - Path=/api/v1/leaderboard/**
 
 eureka:
   client:

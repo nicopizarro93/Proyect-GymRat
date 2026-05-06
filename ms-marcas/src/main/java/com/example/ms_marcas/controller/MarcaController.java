@@ -7,8 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.ms_marcas.model.Marca;
@@ -44,6 +46,16 @@ public class MarcaController {
     @GetMapping("/{id}")
     public ResponseEntity<Marca> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(marcaService.buscarPorId(id));
+    }
+
+    @GetMapping("/ejercicio/{nombreEjercicio}/aprobadas")
+    public ResponseEntity<List<Marca>> obtenerMarcasAprobadas(@PathVariable String nombreEjercicio) {
+        return ResponseEntity.ok(marcaService.obtenerMarcasAprobadasPorEjercicio(nombreEjercicio));
+    }
+
+    @PutMapping("/{id}/estado")
+    public ResponseEntity<Marca> actualizarEstado(@PathVariable Long id, @RequestParam String estado) {
+        return ResponseEntity.ok(marcaService.actualizarEstado(id, estado));
     }
 
 }

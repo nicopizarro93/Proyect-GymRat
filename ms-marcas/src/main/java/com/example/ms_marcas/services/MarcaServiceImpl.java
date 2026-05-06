@@ -49,4 +49,17 @@ public class MarcaServiceImpl implements MarcaService {
         return marcaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Marca no encontrada"));
     }
+
+    @Override
+    public List<Marca> obtenerMarcasAprobadasPorEjercicio(String nombreEjercicio) {
+        return marcaRepository.findByNombreEjercicioAndEstadoOrderByPesoLevantadoDesc(nombreEjercicio, "APROBADA");
+    }
+
+    @Override
+    public Marca actualizarEstado(Long id, String nuevoEstado) {
+        Marca marca = marcaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Marca no encontrada"));
+        marca.setEstado(nuevoEstado);
+        return marcaRepository.save(marca);
+    }
 }

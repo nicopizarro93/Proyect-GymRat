@@ -10,6 +10,7 @@ public interface MarcaService {
     List<Marca> obtenerPorRut(String rut);
     List<Marca> listarTodos();  
     Marca buscarPorId(Long id);
-    
+    List<Marca> obtenerMarcasAprobadasPorEjercicio(String nombreEjercicio);
+    Marca actualizarEstado(Long id, String nuevoEstado);
     
 }
