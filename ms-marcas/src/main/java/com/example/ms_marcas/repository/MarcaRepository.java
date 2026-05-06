@@ -12,4 +12,6 @@ public interface MarcaRepository extends JpaRepository<Marca, Long> {
     List<Marca> findByRutAtleta(String rutAtleta);
     
     List<Marca> findByEstado(String estado);
+    
+    List<Marca> findByNombreEjercicioAndEstadoOrderByPesoLevantadoDesc(String nombreEjercicio, String estado);
 }

@@ -3,12 +3,17 @@ package com.example.ms_verificaciones.model;
 import com.example.ms_verificaciones.model.enums.EstadoValidacion;
 import com.example.ms_verificaciones.model.enums.TipoValidacion;
 
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -40,7 +45,9 @@ public class Verificacion {
 
     private String urlVideo;
 
-    private String rutValidadorPrincipal;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "verificacion_validadores", joinColumns = @JoinColumn(name = "verificacion_id"))
+    @Column(name = "rut_validador")
+    private java.util.Set<String> rutsValidadores = new java.util.HashSet<>();
 
-    private String rutValidadorSecundario;
 }
