@@ -3,6 +3,8 @@ package com.example.ms_rutinas.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.ms_rutinas.client.EjerciciosClient;
+import com.example.ms_rutinas.dto.EjercicioResponse;
 import com.example.ms_rutinas.model.Rutina;
 import com.example.ms_rutinas.service.RutinaService;
 
@@ -29,10 +31,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class RutinaController {
 
     private final RutinaService service;
+    private final EjerciciosClient ejerciciosClient;
 
     @PostMapping
     public ResponseEntity<Rutina> crear(@Valid@RequestBody Rutina rutina) {
-       
+        
         
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(service.guardarRutina(rutina));
@@ -52,6 +55,11 @@ public class RutinaController {
     public ResponseEntity<?> eliminar(@PathVariable Long id){
         service.eliminarRutina(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/ejercicios")
+    public ResponseEntity<List<EjercicioResponse>> obtenerEjercicios(){
+        return ResponseEntity.ok(ejerciciosClient.listarEjercicios());
     }
     
 }

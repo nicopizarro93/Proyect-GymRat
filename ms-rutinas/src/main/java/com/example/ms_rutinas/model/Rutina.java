@@ -1,6 +1,9 @@
 package com.example.ms_rutinas.model;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -36,5 +39,8 @@ public class Rutina {
     @NotNull(message = "la cantidad de dias es obligatoria")
     @Column(nullable = false)
     private Integer dias;
+
+    @ElementCollection
+    private List<Long> ejerciciosIds;
 
 }
