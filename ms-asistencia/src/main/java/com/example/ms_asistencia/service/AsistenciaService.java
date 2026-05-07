@@ -17,6 +17,13 @@ public class AsistenciaService {
     private final AsistenciaRepository asistenciaRepository; // conectamos la clase service con el repository
 
     public Asistencia registrarAsistencia(String rutAtleta) {
+        // Si el RUT viene vacío o no existe, simplemente devolvemos "null" (nada) 
+        // evitamos que el programa intente guardar basura en la base de datos.
+        if (rutAtleta == null || rutAtleta.isEmpty()) {
+            return null; 
+        }
+
+        // Si el RUT sí viene con texto, el código sigue su camino normal:
         Asistencia nuevaAsistencia = new Asistencia();
         nuevaAsistencia.setRutAtleta(rutAtleta);
         nuevaAsistencia.setFechaHoraIngreso(LocalDateTime.now());
@@ -26,6 +33,8 @@ public class AsistenciaService {
     }
 
     public List<Asistencia> obtenerAsistenciasPorRut(String rutAtleta) {
+        // Devolvemos lo que encuentre la base de datos.
+        // Si el atleta no existe, Spring simplemente devolverá una lista vacía:
         return asistenciaRepository.findByRutAtleta(rutAtleta);
     }
 }
