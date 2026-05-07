@@ -18,7 +18,7 @@ public class AsistenciaService {
 
     public Asistencia registrarAsistencia(String rutAtleta) {
         // Si el RUT viene vacío o no existe, simplemente devolvemos "null" (nada) 
-        // y asi evitamos que el programa intente guardar basura en la base de datos.
+        // evitamos que el programa intente guardar basura en la base de datos.
         if (rutAtleta == null || rutAtleta.isEmpty()) {
             return null; 
         }
