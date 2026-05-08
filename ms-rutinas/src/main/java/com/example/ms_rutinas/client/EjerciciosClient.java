@@ -6,15 +6,15 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import com.example.ms_rutinas.dto.EjercicioResponse;
+import com.example.ms_rutinas.dto.EjercicioResponseDTO;
 
 @FeignClient(name = "ms-ejercicios", path = "/api/v1/ejercicios")
 public interface EjerciciosClient {
 
     @GetMapping
-    List<EjercicioResponse> listarEjercicios();
+    List<EjercicioResponseDTO> listarEjercicios();
 
     @GetMapping("/{id}")
-    EjercicioResponse buscarEjercicioPorId(@PathVariable("id") Long id);
+    EjercicioResponseDTO buscarEjercicioPorId(@PathVariable("id") Long id);
     
 }
