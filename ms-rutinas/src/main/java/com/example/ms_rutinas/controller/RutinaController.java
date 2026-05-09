@@ -4,7 +4,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.ms_rutinas.client.EjerciciosClient;
-import com.example.ms_rutinas.dto.EjercicioResponse;
+import com.example.ms_rutinas.dto.EjercicioResponseDTO;
+import com.example.ms_rutinas.dto.RutinaResponseDTO;
 import com.example.ms_rutinas.model.Rutina;
 import com.example.ms_rutinas.service.RutinaService;
 
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+
+
 
 
 
@@ -50,6 +53,23 @@ public class RutinaController {
     public ResponseEntity<List<Rutina>> listar(){
         return ResponseEntity.ok(service.listarRutinas());
     }
+
+    @GetMapping("/{id}/completa")
+    public ResponseEntity<RutinaResponseDTO> obtenerRutinaCompleta(@PathVariable Long id){
+
+        return ResponseEntity.ok(
+            service.obtenerRutinaCompleta(id)
+        );
+    }
+    
+    @GetMapping("/completas")
+    public ResponseEntity<List<RutinaResponseDTO>> listarRutinasCompletas(){
+        return ResponseEntity.ok(
+            service.listarRutinasCompletas()
+        );
+    }
+    
+    
     
     @DeleteMapping("/{id}")
     public ResponseEntity<?> eliminar(@PathVariable Long id){
@@ -58,7 +78,7 @@ public class RutinaController {
     }
 
     @GetMapping("/ejercicios")
-    public ResponseEntity<List<EjercicioResponse>> obtenerEjercicios(){
+    public ResponseEntity<List<EjercicioResponseDTO>> obtenerEjercicios(){
         return ResponseEntity.ok(ejerciciosClient.listarEjercicios());
     }
     
