@@ -42,6 +42,9 @@ public class DataInitializer {
                 new Ejercicio(null, "vuelos laterales",GrupoMuscularEnum.HOMBRO,DificultadEnum.AVANZADO),
                 new Ejercicio(null, "press militar",GrupoMuscularEnum.HOMBRO,DificultadEnum.AVANZADO),
 
+                new Ejercicio(null, "sentadilla",GrupoMuscularEnum.PIERNA,DificultadEnum.AVANZADO),
+                new Ejercicio(null, "prensa",GrupoMuscularEnum.PIERNA,DificultadEnum.PRINCIPIANTE),
+
                 new Ejercicio(null, "predicador con barra",GrupoMuscularEnum.BICEP,DificultadEnum.INTERMEDIO),
                 new Ejercicio(null, "curl con mancuernas",GrupoMuscularEnum.BICEP,DificultadEnum.PRINCIPIANTE),
 
@@ -55,7 +58,7 @@ public class DataInitializer {
             );
 
             ejerciciorepository.saveAll(ejercicios);
-            System.out.println("datos inicialez cargados correctamente");
+            System.out.println("datos iniciales cargados correctamente");
         };
     }
 }
