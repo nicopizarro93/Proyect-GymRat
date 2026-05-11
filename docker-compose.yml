@@ -1,0 +1,119 @@
+version: '3.8'
+
+services:
+  # Base de Datos centralizada para todos los servicios
+  mysql-db:
+    image: mysql:8.0
+    container_name: mysql-gym
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    networks:
+      - gym-network
+
+  # Servidor de Descubrimiento (Fundamental para Feign)
+  eureka-server:
+    build: ./eureka-server
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    networks:
+      - gym-network
+
+  # API Gateway - Punto de entrada único
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      - eureka-server
+    networks:
+      - gym-network
+
+  ms-atletas:
+    build: ./ms-atletas
+    container_name: ms-atletas
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/pb_atletas_db?createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      - mysql-db
+      - eureka-server
+    networks:
+      - gym-network
+
+  ms-ejercicios:
+    build: ./ms-ejercicios
+    container_name: ms-ejercicios
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/pb_ejercicios_db?createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      - mysql-db
+      - eureka-server
+    networks:
+      - gym-network
+
+  ms-marcas:
+    build: ./ms-marcas
+    container_name: ms-marcas
+    ports:
+      - "8083:8083"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/pb_marcas_db?createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      - mysql-db
+      - eureka-server
+    networks:
+      - gym-network
+
+  ms-leaderboard:
+    build: ./ms-leaderboard
+    container_name: ms-leaderboard
+    ports:
+      - "8085:8085"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/pb_leaderboard_db?createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      - mysql-db
+      - eureka-server
+    networks:
+      - gym-network
+
+  ms-verificaciones:
+    build: ./ms-verificaciones
+    container_name: ms-verificaciones
+    ports:
+      - "8087:8087"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/pb_verificaciones_db?createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      - mysql-db
+      - eureka-server
+    networks:
+      - gym-network
+
+networks:
+  gym-network:
+    driver: bridge
