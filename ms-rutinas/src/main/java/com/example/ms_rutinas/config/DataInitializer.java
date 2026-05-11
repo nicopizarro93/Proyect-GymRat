@@ -28,10 +28,10 @@ public class DataInitializer {
 
                 new Rutina(
                     null,
-                    "Powerbuilding",
+                    "Powerlifter",
                     DificultadEnum.INTERMEDIO,
                     6,
-                    List.of(1L,2L,3L,4L)
+                    List.of(1L,11L,3L)
                 ),
 
                 new Rutina(
@@ -39,14 +39,14 @@ public class DataInitializer {
                     "BodyBuilding",
                     DificultadEnum.INTERMEDIO,
                     5,
-                    List.of(1L,2L,3L,4L)
+                    List.of(2L,3L,6L,9L,12L,13L,16L)
                 ),
                 new Rutina(
                     null,
                     "FullBody",
                     DificultadEnum.AVANZADO,
-                    5,
-                    List.of(1L,2L,3L,4L)
+                    4,
+                    List.of(1L,6L,10L,12L,14L,15L,18L)
                 )
             );
             rutinaRepository.saveAll(rutinas);
