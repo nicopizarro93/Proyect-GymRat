@@ -1,6 +1,7 @@
 package com.example.ms_ejercicios.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -43,6 +44,11 @@ public class EjercicioServiceIMPL implements EjercicioService {
     @Override
     public List<Ejercicio> listarPorGrupoMuscular(GrupoMuscularEnum grupoMuscular) {
       return ejercicioRepository.findByGrupoMuscular(grupoMuscular);
+    }
+
+    @Override
+    public Optional<Ejercicio> buscarPorNombre(String nombre) {
+         return ejercicioRepository.findByNombreEjercicio(nombre);
     }
 
 }
