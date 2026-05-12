@@ -5,10 +5,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.stereotype.Service;
-
 import com.example.ms_leaderboard.client.AtletaClient;
+import com.example.ms_leaderboard.client.EjercicioClient;
 import com.example.ms_leaderboard.client.MarcaClient;
 import com.example.ms_leaderboard.dto.AtletaDTO;
 import com.example.ms_leaderboard.dto.LeaderboardResponse;
@@ -25,10 +24,20 @@ public class LeaderboardServiceImpl implements LeaderboardService{
     private final MarcaClient marcaClient;
     private final AtletaClient atletaClient;
     private final ConsultaLeaderboardRepository repositorioVisitas;
+    private final EjercicioClient ejercicioClient;
 
     @Override
     public List<LeaderboardResponse> generarTop10(String nombreEjercicio) {
         
+        try {
+            ejercicioClient.obtenerEjercicioPorNombre(nombreEjercicio);
+        } catch (feign.FeignException.NotFound e) {
+            // Si ms-ejercicios responde con 404, cortamos la ejecución y lanzamos tu error
+            throw new IllegalArgumentException("Error: El ejercicio '" + nombreEjercicio + "' no existe en el catálogo oficial.");
+        } catch (feign.FeignException e) {
+            // Si ms-ejercicios está apagado o falla
+            throw new RuntimeException("Error de validación: No se pudo comunicar con el catálogo de ejercicios.");
+        }
         // 1. Traer TODAS las marcas aprobadas de ese ejercicio
         List<MarcaDTO> marcas = marcaClient.obtenerMarcasAprobadas(nombreEjercicio);
 
