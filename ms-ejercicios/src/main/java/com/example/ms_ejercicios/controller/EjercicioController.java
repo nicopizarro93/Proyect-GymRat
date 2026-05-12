@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.ms_ejercicios.model.Ejercicio;
+import com.example.ms_ejercicios.model.GrupoMuscularEnum;
 import com.example.ms_ejercicios.service.EjercicioService;
 
 import jakarta.validation.Valid;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 
@@ -47,6 +50,12 @@ public class EjercicioController {
         List<Ejercicio> ejercicios=ejercicioService.listarEjercicios();
         return ResponseEntity.ok(ejercicios);
     }
+
+    @GetMapping("/grupo/{grupoMuscular}")
+    public ResponseEntity<List<Ejercicio>>listarPorGrupo(@PathVariable GrupoMuscularEnum grupoMuscular) {
+        return ResponseEntity.ok(ejercicioService.listarPorGrupoMuscular(grupoMuscular));
+    }
+    
     
     @DeleteMapping("/{id}")
     public ResponseEntity<?>eliminarEjercicio(@PathVariable Long id){
