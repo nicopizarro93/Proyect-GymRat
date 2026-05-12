@@ -1,6 +1,7 @@
 package com.example.ms_asistencia.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -52,8 +53,13 @@ public Asistencia registrarAsistencia(String rutAtleta) {
     
     return asistenciaRepository.save(nuevaAsistencia);
 }
-    public java.util.List<Asistencia> obtenerAsistenciasPorRut(String rutAtleta) {
+    public List<Asistencia> obtenerAsistenciasPorRut(String rutAtleta) {
         // Va al repositorio y busca todos los registros asociados a ese RUT
         return asistenciaRepository.findByRutAtleta(rutAtleta);
+    }
+
+    public List<Asistencia> obtenerTodasAsistencias() {
+        // Devuelve la lista completa de asistencias
+        return asistenciaRepository.findAll();
     }
 }

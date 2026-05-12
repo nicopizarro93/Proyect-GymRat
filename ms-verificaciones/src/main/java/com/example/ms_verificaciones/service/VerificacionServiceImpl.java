@@ -9,6 +9,9 @@ import com.example.ms_verificaciones.model.enums.TipoValidacion;
 import com.example.ms_verificaciones.repository.VerificacionRepository;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -100,5 +103,10 @@ public class VerificacionServiceImpl implements VerificacionService {
         }
 
         return guardada;
+    }
+
+    @Override
+    public List<Verificacion> listarVerificaciones() {
+        return verificacionRepository.findAll();
     }
 }

@@ -26,24 +26,31 @@ public class DataInitializer {
                 List<Atleta> atletas=List.of(
                     new Atleta(
                         null,
-                        "19.235.003-5",
-                        "Alexis",
+                        "12345678-9",
+                        "Astroberto Morgan",
+                        "astroberto@gymrat.com",
+                        "STAFF"
+                    ),
+                    new Atleta(
+                        null,
+                        "18357914-2",
+                        "Nicolas Pizarro",
+                        "nicolas@gymrat.com",
+                        "MIEMBRO"
+                    ),
+                    new Atleta(
+                        null,
+                        "26587494-3",
+                        "Alexis acuña",
                         "alexis@gymrat.com",
                         "MIEMBRO"
                     ),
                     new Atleta(
                         null,
-                        "18.456.789-1",
-                        "Matias",
-                        "matias@gymrat.com",
+                        "87654321-0",
+                        "sebastian reyes",
+                        "sebastian@gymrat.com",
                         "MIEMBRO"
-                    ),
-                    new Atleta(
-                        null,
-                        "17.555.444-2",
-                        "Camila",
-                        "camila@gymrat.com",
-                        "STAFF"
                     )
                 );
                 atletaRepository.saveAll(atletas);

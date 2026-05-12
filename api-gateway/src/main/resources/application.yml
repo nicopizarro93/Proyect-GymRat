@@ -11,30 +11,47 @@ spring:
           enabled: true
           lower-case-service-id: true
       routes:
+        - id: asistencia-service
+          uri: lb://ms-asistencia
+          predicates:
+            - Path=/api/v1/asistencias/**
+
         - id: atletas-service
           uri: lb://ms-atletas
           predicates:
-            - Path=/api/v1/atletas**
+            - Path=/api/v1/atletas/**
+
+        - id: ejercicios-service
+          uri: lb://ms-ejercicios
+          predicates:
+            - Path=/api/v1/ejercicios/**
+
+        - id: leaderboard-service
+          uri: lb://ms-leaderboard
+          predicates:
+            - Path=/api/v1/leaderboard/**
       
         - id: marcas-service
           uri: lb://ms-marcas
           predicates:
             - Path=/api/v1/marcas/**
         
-        - id: ejercicios-service
-          uri: lb://ms-ejercicios
+        - id: membresias-service
+          uri: lb://ms-membresias
           predicates:
-            - Path=/api/v1/ejercicios/**
-        
+            - Path=/api/v1/membresias/**
+
+        - id: rutinas-service
+          uri: lb://ms-rutinas
+          predicates:
+            - Path=/api/v1/rutinas/**
+
         - id: verificaciones-service
           uri: lb://ms-verificaciones
           predicates:
             - Path=/api/v1/verificaciones/**
         
-        - id: leaderboard-service
-          uri: lb://ms-leaderboard
-          predicates:
-            - Path=/api/v1/leaderboard/**
+        
 
 eureka:
   client:
