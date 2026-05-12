@@ -1,11 +1,11 @@
 package com.example.ms_asistencia.service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import com.example.ms_asistencia.client.AtletaClient;
+import com.example.ms_asistencia.client.MembresiaClient;
 import com.example.ms_asistencia.model.Asistencia;
 import com.example.ms_asistencia.repository.AsistenciaRepository;
 
@@ -17,38 +17,43 @@ public class AsistenciaService {
 
     private final AsistenciaRepository asistenciaRepository; // conectamos la clase service con el repository
     private final AtletaClient atletaClient; // Conectamos el "teléfono"
+    private final MembresiaClient membresiaClient;
 
-    public Asistencia registrarAsistencia(String rutAtleta) {
-        // Si el RUT viene vacío o no existe, simplemente devolvemos "null" (nada) 
-        // evitamos que el programa intente guardar basura en la base de datos.
-        if (rutAtleta == null || rutAtleta.isEmpty()) {
-            return null; 
-        }
+public Asistencia registrarAsistencia(String rutAtleta) {
+    if (rutAtleta == null || rutAtleta.isEmpty()) return null;
 
-        // --- EL ESCUDO: Validación del torniquete con manejo de errores ---
-        try {
-            // El sistema intenta llamar al microservicio.
-            atletaClient.obtenerAtletaPorRut(rutAtleta); 
-        } catch (Exception e) {
-            // Si el RUT no existe, el microservicio arrojará un error.
-            // Lo atrapamos aquí para que la aplicación no colapse, mostramos un mensaje
-            // en la consola y detenemos el proceso (retornando null).
-            System.out.println("Acceso denegado: El atleta con RUT " + rutAtleta + " no está registrado.");
-            return null; 
-        }
+    // Empezamos asumiendo que no puede pasar hasta que los servicios digan lo contrario
+    String estadoFinal = "DENEGADO"; 
 
-        // Si el RUT sí existe en ms-atletas, el código sigue su camino normal:
-        Asistencia nuevaAsistencia = new Asistencia();
-        nuevaAsistencia.setRutAtleta(rutAtleta);
-        nuevaAsistencia.setFechaHoraIngreso(LocalDateTime.now());
-        nuevaAsistencia.setEstado("PERMITIDO"); 
+    try {
+        // PASO 1: ¿El atleta existe? (Llamada a ms-atleta)
+        atletaClient.obtenerAtletaPorRut(rutAtleta); 
+
+        // PASO 2: ¿Tiene membresía actual? (Llamada a ms-membresia)
+        // Usamos el método de tu compañero: obtenerActual
+        Object membresia = membresiaClient.obtenerActual(rutAtleta);
         
-        return asistenciaRepository.save(nuevaAsistencia);
+        // Si ms-membresia devuelve un objeto (un plan), entonces puede pasar
+        if (membresia != null) {
+            estadoFinal = "PERMITIDO";
+        }
+
+    } catch (Exception e) {
+        // Si el RUT no existe o ms-membresia arroja error (porque no hay plan),
+        // el estado se quedará como "DENEGADO".
+        System.out.println("Validación fallida para: " + rutAtleta + ". Motivo: " + e.getMessage());
     }
 
-    public List<Asistencia> obtenerAsistenciasPorRut(String rutAtleta) {
-        // Devolvemos lo que encuentre la base de datos.
-        // Si el atleta no existe, Spring simplemente devolverá una lista vacía:
+    // Finalmente, guardamos el registro en TU base de datos (pb_asistencia_db)
+    Asistencia nuevaAsistencia = new Asistencia();
+    nuevaAsistencia.setRutAtleta(rutAtleta);
+    nuevaAsistencia.setFechaHoraIngreso(LocalDateTime.now());
+    nuevaAsistencia.setEstado(estadoFinal); 
+    
+    return asistenciaRepository.save(nuevaAsistencia);
+}
+    public java.util.List<Asistencia> obtenerAsistenciasPorRut(String rutAtleta) {
+        // Va al repositorio y busca todos los registros asociados a ese RUT
         return asistenciaRepository.findByRutAtleta(rutAtleta);
     }
 }
