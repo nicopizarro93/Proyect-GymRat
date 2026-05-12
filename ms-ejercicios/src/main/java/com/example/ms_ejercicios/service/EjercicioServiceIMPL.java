@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.example.ms_ejercicios.model.Ejercicio;
+import com.example.ms_ejercicios.model.GrupoMuscularEnum;
 import com.example.ms_ejercicios.repository.EjercicioRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,11 @@ public class EjercicioServiceIMPL implements EjercicioService {
     @Override
     public void eliminarPorId(Long id) {
        ejercicioRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Ejercicio> listarPorGrupoMuscular(GrupoMuscularEnum grupoMuscular) {
+      return ejercicioRepository.findByGrupoMuscular(grupoMuscular);
     }
 
 }

@@ -94,4 +94,20 @@ public class RutinaServiceIMPL implements RutinaService {
        .toList();
     }
 
+    @Override
+    public Rutina actualizarRutina(Long id, Rutina rutinaActializada) {
+       Rutina rutinaExistente= rutinaRepository.findById(id)
+       .orElseThrow(()-> new RuntimeException("Rutina no encontrada"));
+
+       validarEjercicios(rutinaActializada.getEjerciciosIds());
+
+       rutinaExistente.setNombreRutina(rutinaActializada.getNombreRutina());
+       rutinaExistente.setDificultad(rutinaActializada.getDificultad());
+       rutinaExistente.setDias(rutinaActializada.getDias());
+       rutinaExistente.setEjerciciosIds(rutinaActializada.getEjerciciosIds());
+
+       return rutinaRepository.save(rutinaExistente);
+       
+    }
+
 }

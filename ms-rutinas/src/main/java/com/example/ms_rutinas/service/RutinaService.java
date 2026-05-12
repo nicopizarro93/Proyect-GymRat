@@ -13,4 +13,5 @@ public interface RutinaService {
     void eliminarRutina(Long id);
     RutinaResponseDTO obtenerRutinaCompleta(Long id);
     List<RutinaResponseDTO> listarRutinasCompletas();
+    Rutina actualizarRutina(Long id, Rutina rutina);
 }
