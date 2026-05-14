@@ -1,5 +1,8 @@
 package com.example.ms_verificaciones.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.example.ms_verificaciones.model.enums.EstadoValidacion;
 import com.example.ms_verificaciones.model.enums.TipoValidacion;
 
@@ -48,6 +51,6 @@ public class Verificacion {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "verificacion_validadores", joinColumns = @JoinColumn(name = "verificacion_id"))
     @Column(name = "rut_validador")
-    private java.util.Set<String> rutsValidadores = new java.util.HashSet<>();
+    private Set<String> rutsValidadores = new HashSet<>();
 
 }
