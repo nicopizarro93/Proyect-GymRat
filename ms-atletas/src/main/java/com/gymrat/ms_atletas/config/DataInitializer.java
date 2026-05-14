@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.gymrat.ms_atletas.model.Atleta;
+import com.gymrat.ms_atletas.model.RolEnum;
 import com.gymrat.ms_atletas.repository.AtletaRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -29,28 +30,28 @@ public class DataInitializer {
                         "12345678-9",
                         "Astroberto Morgan",
                         "astroberto@gymrat.com",
-                        "STAFF"
+                        RolEnum.STAFF
                     ),
                     new Atleta(
                         null,
                         "18357914-2",
                         "Nicolas Pizarro",
                         "nicolas@gymrat.com",
-                        "MIEMBRO"
+                        RolEnum.MIEMBRO
                     ),
                     new Atleta(
                         null,
                         "26587494-3",
                         "Alexis acuña",
                         "alexis@gymrat.com",
-                        "MIEMBRO"
+                        RolEnum.MIEMBRO
                     ),
                     new Atleta(
                         null,
                         "87654321-0",
                         "sebastian reyes",
                         "sebastian@gymrat.com",
-                        "MIEMBRO"
+                        RolEnum.MIEMBRO
                     )
                 );
                 atletaRepository.saveAll(atletas);

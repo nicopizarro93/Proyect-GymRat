@@ -2,12 +2,15 @@ package com.gymrat.ms_atletas.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,8 +37,9 @@ public class Atleta {
     private String email;
 
     // Puede ser "MIEMBRO" o "STAFF"
-    @NotBlank(message = "Debe asignar un rol al atleta")
-    private String rol;
+    @Enumerated(EnumType.STRING)
+    @NotNull(message = "Debe asignar un rol al atleta")
+    private RolEnum rol;
 
     
 
