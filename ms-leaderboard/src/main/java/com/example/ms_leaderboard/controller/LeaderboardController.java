@@ -21,7 +21,7 @@ public class LeaderboardController {
     private final LeaderboardService leaderboardService;
 
     @GetMapping("/{ejercicio}")
-    public ResponseEntity<List<LeaderboardResponse>> obtenerPantallaTop10(@PathVariable String ejercicio) {
+    public ResponseEntity<List<LeaderboardResponse>> obtenerPantallaTop10(@PathVariable("ejercicio") String ejercicio) {
         return ResponseEntity.ok(leaderboardService.generarTop10(ejercicio));
     }
 }

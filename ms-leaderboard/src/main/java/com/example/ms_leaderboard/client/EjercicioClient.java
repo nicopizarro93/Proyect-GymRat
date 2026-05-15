@@ -10,6 +10,6 @@ import com.example.ms_leaderboard.dto.EjercicioDTO;
 public interface EjercicioClient {
 
     @GetMapping("/nombre/{nombreEjercicio}")
-    EjercicioDTO obtenerEjercicioPorNombre(@PathVariable String nombreEjercicio);
+    EjercicioDTO obtenerEjercicioPorNombre(@PathVariable("nombreEjercicio") String nombreEjercicio);
 
 }

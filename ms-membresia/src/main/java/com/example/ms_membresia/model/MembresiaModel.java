@@ -2,14 +2,16 @@ package com.example.ms_membresia.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
 @Entity // esta clase será una tabla en la base de datos
 @Table(name = "membresias") // Nombramos la tabla
-@Data
+@Getter
+@Setter
 @NoArgsConstructor // crea un constructor vacío
 @AllArgsConstructor //crea un constructor con todos los datos
 public class MembresiaModel {

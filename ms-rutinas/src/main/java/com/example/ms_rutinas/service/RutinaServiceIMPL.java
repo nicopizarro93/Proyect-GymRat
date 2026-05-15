@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class RutinaServiceIMPL implements RutinaService {
+public class RutinaServiceImpl implements RutinaService {
 
     private final RutinaRepository rutinaRepository;
     private final EjerciciosClient ejerciciosClient;

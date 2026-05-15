@@ -28,34 +28,34 @@ public class DataInitializer {
                     new Atleta(
                         null,
                         "12345678-9",
-                        "Astroberto Morgan",
-                        "astroberto@gymrat.com",
+                        "Astroberto Perez", // Mayúsculas y tilde
+                        "Astroberto@gymrat.com",
                         RolEnum.STAFF
                     ),
                     new Atleta(
                         null,
                         "18357914-2",
-                        "Nicolas Pizarro",
+                        "Nicolás Pizarro", // Mayúsculas y tilde
                         "nicolas@gymrat.com",
                         RolEnum.MIEMBRO
                     ),
                     new Atleta(
                         null,
                         "26587494-3",
-                        "Alexis acuña",
+                        "Alexis Acuña", // Mayúsculas
                         "alexis@gymrat.com",
                         RolEnum.MIEMBRO
                     ),
                     new Atleta(
                         null,
                         "87654321-0",
-                        "sebastian reyes",
-                        "sebastian@gymrat.com",
+                        "Humberto Ramirez", // Mayúsculas
+                        "Humberto@gymrat.com",
                         RolEnum.MIEMBRO
                     )
                 );
                 atletaRepository.saveAll(atletas);
-                System.out.println("atletas precargados con exito");
+                System.out.println("✅ Atletas base (Staff y Miembros) precargados con éxito.");
             };
         }
 }

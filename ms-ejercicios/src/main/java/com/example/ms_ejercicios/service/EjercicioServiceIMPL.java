@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class EjercicioServiceIMPL implements EjercicioService {
+public class EjercicioServiceImpl implements EjercicioService {
     
     private final EjercicioRepository ejercicioRepository;
     
