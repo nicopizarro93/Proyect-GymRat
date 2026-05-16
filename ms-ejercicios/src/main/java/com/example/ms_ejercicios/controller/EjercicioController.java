@@ -2,6 +2,8 @@ package com.example.ms_ejercicios.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.example.ms_ejercicios.dto.EjercicioRequestDTO;
 import com.example.ms_ejercicios.model.Ejercicio;
 import com.example.ms_ejercicios.model.GrupoMuscularEnum;
 import com.example.ms_ejercicios.service.EjercicioService;
@@ -24,10 +26,15 @@ public class EjercicioController {
     private final EjercicioService ejercicioService;
 
     @PostMapping
-    public ResponseEntity<Ejercicio>crearEjercicio(@Valid @RequestBody Ejercicio ejercicio) {
-        Ejercicio nuevEjercicio=ejercicioService.guardarEjercicio(ejercicio);
+    public ResponseEntity<Ejercicio> crearEjercicio(@Valid @RequestBody EjercicioRequestDTO dto) {
+        Ejercicio nuevoEjercicio = new Ejercicio();
+        // Convertimos todo a mayúsculas o capitalizado si prefieres unificar el formato
+        nuevoEjercicio.setNombreEjercicio(dto.getNombreEjercicio());
+        nuevoEjercicio.setGrupoMuscular(dto.getGrupoMuscular());
+        nuevoEjercicio.setDificultad(dto.getDificultad());
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(nuevEjercicio);
+        Ejercicio ejercicioGuardado = ejercicioService.guardarEjercicio(nuevoEjercicio);
+        return ResponseEntity.status(HttpStatus.CREATED).body(ejercicioGuardado);
     }
 
     @GetMapping("/{id}")

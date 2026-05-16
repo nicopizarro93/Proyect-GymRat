@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
-@FeignClient(name = "ms-asistencia")
+@FeignClient(name = "ms-asistencia", path = "/api/v1/asistencias")
 public interface AsistenciaClient {
 
-    @GetMapping("/api/v1/{rutAtleta}")
+    // Actualizamos a la ruta /historial que definimos en la refactorización de ms-asistencia
+    @GetMapping("/historial/{rutAtleta}")
     List<Object> obtenerAsistenciasPorRut(@PathVariable("rutAtleta") String rutAtleta);
-    
 }

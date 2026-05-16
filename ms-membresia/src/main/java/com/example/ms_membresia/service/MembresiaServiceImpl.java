@@ -7,9 +7,11 @@ import org.springframework.stereotype.Service;
 
 import com.example.ms_membresia.client.AsistenciaClient;
 import com.example.ms_membresia.client.AtletaClient;
+import com.example.ms_membresia.dto.MembresiaRequestDTO;
 import com.example.ms_membresia.model.MembresiaModel;
 import com.example.ms_membresia.repository.MembresiaRepository;
 
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -18,46 +20,45 @@ public class MembresiaServiceImpl implements MembresiaService {
 
     private final MembresiaRepository membresiaRepository;
     private final AsistenciaClient asistenciaClient;
-    private final AtletaClient atletaClient; // Conectamos el teléfono de atleta al servicio
+    private final AtletaClient atletaClient; 
 
-    public MembresiaModel contratarPlan(String rutAtleta, String tipoPlan, int mesesDuracion) {
+    // Ahora recibe el DTO completo
+    @Override
+    public MembresiaModel contratarPlan(MembresiaRequestDTO dto) {
         
-        // Evitamos procesar datos vacíos o nulos
-        if (rutAtleta == null || rutAtleta.isEmpty()) {
-            return null;
-        }
-
-        // Validación con manejo de errores ---
         try {
-            // Intentamos buscar al atleta en el microservicio
-            atletaClient.obtenerAtletaPorRut(rutAtleta); 
-        } catch (Exception e) {
-            // Si el RUT no existe, atrapamos el error
-            // Mostramos un mensaje y cancelamos la creación de la membresía.
-            System.out.println("Venta denegada: El atleta con RUT " + rutAtleta + " no está registrado en el sistema.");
-            return null; 
+            // 1. Validamos que el atleta exista en el sistema
+            atletaClient.obtenerAtletaPorRut(dto.getRutAtleta()); 
+        } catch (FeignException.NotFound e) {
+            // Lanzamos un error capturable si el RUT no existe
+            throw new IllegalArgumentException("Venta denegada: El atleta con RUT " + dto.getRutAtleta() + " no está registrado en el sistema.");
+        } catch (FeignException e) {
+            throw new RuntimeException("Error de comunicación con ms-atletas al validar la membresía.");
         }
 
-        // Si pasó el try sin problemas, creamos la membresía:
+        // 2. Mapeamos el DTO a la Entidad y le damos lógica de negocio
         MembresiaModel nuevaMembresia = new MembresiaModel();
-        nuevaMembresia.setRutAtleta(rutAtleta);
-        nuevaMembresia.setTipoPlan(tipoPlan);
+        nuevaMembresia.setRutAtleta(dto.getRutAtleta());
+        nuevaMembresia.setTipoPlan(dto.getTipoPlan());
         nuevaMembresia.setFechaInicio(LocalDate.now());
-        nuevaMembresia.setFechaFin(LocalDate.now().plusMonths(mesesDuracion));
+        nuevaMembresia.setFechaFin(LocalDate.now().plusMonths(dto.getMesesDuracion()));
         nuevaMembresia.setEstado("ACTIVA");
 
         return membresiaRepository.save(nuevaMembresia);
     }
 
+    @Override
     public List<MembresiaModel> obtenerHistorialPorRut(String rutAtleta) {
         return membresiaRepository.findByRutAtleta(rutAtleta);
     }
 
+    @Override
     public MembresiaModel obtenerMembresiaActual(String rutAtleta) {
         return membresiaRepository.findTopByRutAtletaOrderByFechaFinDesc(rutAtleta)
                 .orElse(null);
     }
 
+    @Override
     public List<Object> verAsistenciasDesdeMembresia(String rutAtleta) {
         return asistenciaClient.obtenerAsistenciasPorRut(rutAtleta);
     }

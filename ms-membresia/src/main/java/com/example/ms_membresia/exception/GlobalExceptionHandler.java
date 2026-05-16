@@ -1,5 +1,4 @@
-package com.example.ms_rutinas.exception;
-
+package com.example.ms_membresia.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,7 +6,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.example.ms_rutinas.dto.ErrorResponse;
+import com.example.ms_membresia.dto.ErrorResponse;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
