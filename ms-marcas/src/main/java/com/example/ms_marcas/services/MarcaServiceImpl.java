@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.example.ms_marcas.client.AtletaClient;
 import com.example.ms_marcas.model.Marca;
 import com.example.ms_marcas.repository.MarcaRepository;
+import com.example.ms_marcas.dto.MarcaRequestDTO;
 
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
@@ -19,19 +20,25 @@ public class MarcaServiceImpl implements MarcaService {
     private final AtletaClient atletaClient;
 
     @Override
-    public Marca registrarIntento(Marca marca) {
+    public Marca registrarIntento(MarcaRequestDTO dto) {
         try {
-            // 1. Validación remota mediante Feign
-            atletaClient.obtenerAtletaPorRut(marca.getRutAtleta());
-            
-        } catch (FeignException e) { 
-            // AL CAMBIAR A FeignException (A secas), ATRAPAMOS CUALQUIER ERROR (400, 404, etc)
-            throw new RuntimeException("Error: El atleta con RUT " + marca.getRutAtleta() + " no existe o hubo un problema al consultarlo.");
+            // 1. Validación remota
+            atletaClient.obtenerAtletaPorRut(dto.getRutAtleta());
+        } catch (FeignException.NotFound e) {
+            throw new IllegalArgumentException("Error: El atleta con RUT " + dto.getRutAtleta() + " no existe.");
+        } catch (FeignException e) {
+            throw new RuntimeException("Error de comunicación al validar el atleta.");
         }
 
-        // 2. Regla de Negocio
-        marca.setEstado("PENDIENTE");
-        return marcaRepository.save(marca);
+        // 2. Mapear DTO a Entidad
+        Marca nuevaMarca = new Marca();
+        nuevaMarca.setRutAtleta(dto.getRutAtleta());
+        nuevaMarca.setNombreEjercicio(dto.getNombreEjercicio());
+        nuevaMarca.setPesoLevantado(dto.getPesoLevantado());
+        
+        // 3. Regla de Negocio
+        nuevaMarca.setEstado("PENDIENTE");
+        return marcaRepository.save(nuevaMarca);
     }
 
     @Override
@@ -47,7 +54,7 @@ public class MarcaServiceImpl implements MarcaService {
     @Override
     public Marca buscarPorId(Long id) {
         return marcaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Marca no encontrada"));
+                .orElseThrow(() -> new IllegalArgumentException("Marca no encontrada"));
     }
 
     @Override
@@ -57,8 +64,7 @@ public class MarcaServiceImpl implements MarcaService {
 
     @Override
     public Marca actualizarEstado(Long id, String nuevoEstado) {
-        Marca marca = marcaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Marca no encontrada"));
+        Marca marca = buscarPorId(id);
         marca.setEstado(nuevoEstado);
         return marcaRepository.save(marca);
     }

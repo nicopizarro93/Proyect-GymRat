@@ -29,7 +29,7 @@ public class AtletaServiceImpl implements AtletaService {
 
     @Override
     public List<Atleta> listarTodos() {
-        return (List<Atleta>) atletaRepository.findAll();
+        return atletaRepository.findAll(); // Sin el casteo
     }
 
 

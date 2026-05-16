@@ -4,15 +4,12 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import com.gymrat.ms_atletas.dto.AtletaRequestDTO;
 import com.gymrat.ms_atletas.model.Atleta;
 import com.gymrat.ms_atletas.services.AtletaService;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -24,9 +21,16 @@ public class AtletaController {
     private final AtletaService atletaService;
 
     @PostMapping
-    public ResponseEntity<Atleta> crearAtleta(@Valid @RequestBody Atleta atleta) {
-        Atleta nuevoAtleta = atletaService.guardarAtleta(atleta);
-        return ResponseEntity.status(HttpStatus.CREATED).body(nuevoAtleta);
+    public ResponseEntity<Atleta> crearAtleta(@Valid @RequestBody AtletaRequestDTO dto) {
+        // Mapeamos manualmente el DTO a la Entidad
+        Atleta nuevoAtleta = new Atleta();
+        nuevoAtleta.setRut(dto.getRut());
+        nuevoAtleta.setNombre(dto.getNombre());
+        nuevoAtleta.setEmail(dto.getEmail());
+        nuevoAtleta.setRol(dto.getRol());
+
+        Atleta atletaGuardado = atletaService.guardarAtleta(nuevoAtleta);
+        return ResponseEntity.status(HttpStatus.CREATED).body(atletaGuardado);
     }
 
     @GetMapping("/{rut}")
@@ -36,15 +40,14 @@ public class AtletaController {
     }
 
     @GetMapping
-    public ResponseEntity<?> listarAtletas() {
-        List<Atleta> atletas = atletaService.listarTodos();
-        return ResponseEntity.ok(atletas);
+    public ResponseEntity<List<Atleta>> listarAtletas() {
+        // Cambiamos el <?> por <List<Atleta>> para ser más estrictos con lo que devolvemos
+        return ResponseEntity.ok(atletaService.listarTodos());
     }
 
     @DeleteMapping("/{rut}")
-    public ResponseEntity<?> elminarAtleta(@PathVariable String rut) {
+    public ResponseEntity<Void> elminarAtleta(@PathVariable String rut) {
         atletaService.eliminarPorRut(rut);
         return ResponseEntity.noContent().build();
     }
-
 }

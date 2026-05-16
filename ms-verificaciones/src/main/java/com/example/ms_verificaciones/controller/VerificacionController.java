@@ -1,17 +1,11 @@
 package com.example.ms_verificaciones.controller;
 
 import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
+import com.example.ms_verificaciones.dto.RevisionRequest;
+import com.example.ms_verificaciones.dto.VerificacionRequestDTO;
 import com.example.ms_verificaciones.model.Verificacion;
 import com.example.ms_verificaciones.service.VerificacionService;
 
@@ -25,25 +19,22 @@ public class VerificacionController {
 
     private final VerificacionService verificacionService;
 
-    @PostMapping("/solicitar")
-    public ResponseEntity<Verificacion> crearSolicitud(@Valid @RequestBody Verificacion verificacion) {
-        verificacion.setId(null);
-        Verificacion nuevaVerificacion = verificacionService.solicitarVerificacion(verificacion);
+    // Cambiamos de @PostMapping("/solicitar") a @PostMapping a secas y usamos el DTO
+    @PostMapping
+    public ResponseEntity<Verificacion> crearSolicitud(@Valid @RequestBody VerificacionRequestDTO dto) {
+        Verificacion nuevaVerificacion = verificacionService.solicitarVerificacion(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevaVerificacion);
     }
 
     @PutMapping("/{id}/revisar")
     public ResponseEntity<Verificacion> revisarSolicitud(
             @PathVariable Long id, 
-            @Valid @RequestBody com.example.ms_verificaciones.dto.RevisionRequest request) {
+            @Valid @RequestBody RevisionRequest request) {
         
-        Verificacion verificacionActualizada = verificacionService.revisarVerificacion(
-                id, 
-                request.getNuevoEstado(),
-                request.getRutValidador()
+        Verificacion actualizada = verificacionService.revisarVerificacion(
+                id, request.getNuevoEstado(), request.getRutValidador()
         );
-        
-        return ResponseEntity.ok(verificacionActualizada);
+        return ResponseEntity.ok(actualizada);
     }
 
     @GetMapping
