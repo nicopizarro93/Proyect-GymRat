@@ -25,18 +25,25 @@ public class MembresiaServiceImpl implements MembresiaService {
     // Ahora recibe el DTO completo
     @Override
     public MembresiaModel contratarPlan(MembresiaRequestDTO dto) {
-        
+    
         try {
-            // 1. Validamos que el atleta exista en el sistema
             atletaClient.obtenerAtletaPorRut(dto.getRutAtleta()); 
         } catch (FeignException.NotFound e) {
-            // Lanzamos un error capturable si el RUT no existe
             throw new IllegalArgumentException("Venta denegada: El atleta con RUT " + dto.getRutAtleta() + " no está registrado en el sistema.");
         } catch (FeignException e) {
             throw new RuntimeException("Error de comunicación con ms-atletas al validar la membresía.");
         }
 
-        // 2. Mapeamos el DTO a la Entidad y le damos lógica de negocio
+        membresiaRepository.findTopByRutAtletaOrderByFechaFinDesc(dto.getRutAtleta())
+                .ifPresent(membresiaActual -> {
+                    boolean membresiaActiva = "ACTIVA".equalsIgnoreCase(membresiaActual.getEstado());
+                    boolean membresiaNoVencida = !membresiaActual.getFechaFin().isBefore(LocalDate.now());
+
+                    if (membresiaActiva && membresiaNoVencida) {
+                        throw new IllegalArgumentException("El atleta ya tiene una membresía activa. Solo puede contratar un nuevo plan cuando la membresía esté vencida.");
+                    }
+                });
+
         MembresiaModel nuevaMembresia = new MembresiaModel();
         nuevaMembresia.setRutAtleta(dto.getRutAtleta());
         nuevaMembresia.setTipoPlan(dto.getTipoPlan());
@@ -49,13 +56,29 @@ public class MembresiaServiceImpl implements MembresiaService {
 
     @Override
     public List<MembresiaModel> obtenerHistorialPorRut(String rutAtleta) {
+        try {
+            atletaClient.obtenerAtletaPorRut(rutAtleta);
+        } catch (FeignException.NotFound e) {
+            throw new IllegalArgumentException("No se encontró un atleta con RUT " + rutAtleta + ".");
+        } catch (FeignException e) {
+            throw new RuntimeException("Error de comunicación con ms-atletas al validar el RUT.");
+        }
+        
         return membresiaRepository.findByRutAtleta(rutAtleta);
     }
 
     @Override
     public MembresiaModel obtenerMembresiaActual(String rutAtleta) {
+        try {
+            atletaClient.obtenerAtletaPorRut(rutAtleta);
+        } catch (FeignException.NotFound e) {
+            throw new IllegalArgumentException("No se encontró un atleta con RUT " + rutAtleta + ".");
+        } catch (FeignException e) {
+            throw new RuntimeException("Error de comunicación con ms-atletas al validar el RUT.");
+        }
+
         return membresiaRepository.findTopByRutAtletaOrderByFechaFinDesc(rutAtleta)
-                .orElse(null);
+                .orElseThrow(() -> new RuntimeException("No se encontró una membresía para el atleta con RUT " + rutAtleta + "."));
     }
 
     @Override

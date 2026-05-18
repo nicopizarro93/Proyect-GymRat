@@ -26,10 +26,15 @@ public class AsistenciaServiceImpl implements AsistenciaService {
         String estadoFinal = "DENEGADO";
 
         try {
-            // PASO 1: Validar si existe el atleta
             atletaClient.obtenerAtletaPorRut(rutAtleta);
+        } catch (FeignException.NotFound e) {
+            throw new RuntimeException("No se encontró un atleta con RUT " + rutAtleta + ".");
+        } catch (FeignException e) {
+            System.err.println("ERROR CRÍTICO - Falló la comunicación con ms-atletas al validar el RUT: " + rutAtleta);
+            throw new RuntimeException("Error temporal al validar el atleta. Por favor, intente más tarde.");
+        }
 
-            // PASO 2: Validar si tiene membresía activa
+        try {
             Object membresia = membresiaClient.obtenerActual(rutAtleta);
 
             if (membresia != null) {
@@ -37,18 +42,13 @@ public class AsistenciaServiceImpl implements AsistenciaService {
             }
 
         } catch (FeignException.NotFound e) {
-            // Error 404: El atleta no existe o no tiene membresía.
-            // Usamos impresión estándar para registrar el evento en la terminal de Docker
-            System.out.println("AVISO - Acceso denegado para RUT " + rutAtleta + ": Atleta no encontrado o sin membresía activa.");
-            
+            System.out.println("AVISO - Acceso denegado para RUT " + rutAtleta + ": Sin membresía activa.");
+
         } catch (FeignException e) {
-            // Error 500 o caída de red: ms-atletas o ms-membresia están apagados
-            // System.err imprime en rojo en muchas consolas, ideal para errores de comunicación
-            System.err.println("ERROR CRÍTICO - Falló la comunicación con otros microservicios al validar el RUT: " + rutAtleta);
-            throw new RuntimeException("Error temporal al validar los accesos. Por favor, intente más tarde.");
+            System.err.println("ERROR CRÍTICO - Falló la comunicación con ms-membresia al validar el RUT: " + rutAtleta);
+            throw new RuntimeException("Error temporal al validar la membresía. Por favor, intente más tarde.");
         }
 
-        // Guardamos el registro independientemente de si pasó o no
         Asistencia nuevaAsistencia = new Asistencia();
         nuevaAsistencia.setRutAtleta(rutAtleta);
         nuevaAsistencia.setFechaHoraIngreso(LocalDateTime.now());
