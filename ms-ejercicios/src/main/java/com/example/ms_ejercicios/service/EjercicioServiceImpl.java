@@ -37,6 +37,10 @@ public class EjercicioServiceImpl implements EjercicioService {
 
     @Override
     public void eliminarPorId(Long id) {
+       if (!ejercicioRepository.existsById(id)) {
+           throw new RuntimeException("No se encontró un ejercicio con el id: " + id);
+       }
+
        ejercicioRepository.deleteById(id);
     }
 
