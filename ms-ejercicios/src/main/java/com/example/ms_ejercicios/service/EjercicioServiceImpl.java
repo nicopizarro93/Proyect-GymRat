@@ -1,7 +1,6 @@
 package com.example.ms_ejercicios.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -47,8 +46,9 @@ public class EjercicioServiceImpl implements EjercicioService {
     }
 
     @Override
-    public Optional<Ejercicio> buscarPorNombre(String nombre) {
-         return ejercicioRepository.findByNombreEjercicio(nombre);
+    public Ejercicio buscarPorNombre(String nombre) {
+         return ejercicioRepository.findByNombreEjercicio(nombre)
+             .orElseThrow(() -> new RuntimeException("ejercicio no encontrado"));
     }
 
 }
