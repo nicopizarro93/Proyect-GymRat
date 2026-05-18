@@ -6,8 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
+/**
+ * Entidad que registra una consulta realizada al leaderboard.
+ * Permite almacenar estadísticas sobre los ejercicios consultados.
+ */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,11 +18,20 @@ import java.time.LocalDateTime;
 @Table(name = "consultas_leaderboard")
 public class ConsultaLeaderboard {
 
+    /**
+     * Identificador único de la consulta.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * Nombre del ejercicio consultado en el leaderboard.
+     */
     private String nombreEjercicio;
-    
+
+    /**
+     * Fecha y hora en que se realizó la consulta.
+     */
     private LocalDateTime fechaConsulta;
 }

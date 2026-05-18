@@ -36,7 +36,7 @@ spring:
           predicates:
             - Path=/api/v1/marcas/**
         
-        - id: membresias-service
+        - id: membresía-service
           uri: lb://ms-membresia
           predicates:
             - Path=/api/v1/membresias/**

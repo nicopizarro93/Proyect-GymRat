@@ -7,9 +7,18 @@ import org.springframework.stereotype.Repository;
 
 import com.example.ms_asistencia.model.Asistencia;
 
+/**
+ * Repositorio encargado del acceso a datos de la entidad Asistencia.
+ * Extiende JpaRepository para disponer de operaciones CRUD básicas.
+ */
 @Repository
-public interface AsistenciaRepository extends JpaRepository<Asistencia, Long> { // Trabajaremos unicamente con la tabla asistencia y con el extends traeremos los metodos.
-    
-    // Metodo para buscar todo el historial de un atleta
-    List<Asistencia> findByRutAtleta(String rutAtleta); 
+public interface AsistenciaRepository extends JpaRepository<Asistencia, Long> {
+
+    /**
+     * Busca todas las asistencias registradas para un atleta específico.
+     *
+     * @param rutAtleta RUT del atleta consultado.
+     * @return lista de asistencias asociadas al RUT indicado.
+     */
+    List<Asistencia> findByRutAtleta(String rutAtleta);
 }

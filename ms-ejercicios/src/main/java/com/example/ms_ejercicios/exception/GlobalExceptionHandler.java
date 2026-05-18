@@ -13,17 +13,27 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Manejador global de excepciones para la API.
+ * Centraliza la respuesta de errores de validación y errores de negocio.
+ */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // Errores de validación (El DTO)
+    /**
+     * Maneja errores de validación producidos por anotaciones como
+     * {@code @NotBlank} y {@code @NotNull} en los DTO.
+     *
+     * @param ex excepción generada cuando falla la validación del request.
+     * @return respuesta de error con estado HTTP 400.
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> manejarValidaciones(MethodArgumentNotValidException ex) {
         Map<String, String> errores = new HashMap<>();
-        ex.getBindingResult().getFieldErrors().forEach(error -> 
+        ex.getBindingResult().getFieldErrors().forEach(error ->
             errores.put(error.getField(), error.getDefaultMessage())
         );
-        
+
         ErrorResponse response = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
@@ -33,12 +43,17 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
-    // Errores de negocio (RUT duplicado, no encontrado, etc.)
+    /**
+     * Maneja errores de negocio, como registros duplicados
+     * o recursos no encontrados.
+     *
+     * @param ex excepción lanzada durante la ejecución de la lógica de negocio.
+     * @return respuesta de error con el estado HTTP correspondiente.
+     */
     @ExceptionHandler({IllegalArgumentException.class, RuntimeException.class})
     public ResponseEntity<ErrorResponse> manejarErroresNegocio(Exception ex) {
-        // Determinamos el código HTTP según el mensaje (404 si no se encontró, 400 si ya existe)
         HttpStatus status = ex.getMessage().contains("No se encontró") ? HttpStatus.NOT_FOUND : HttpStatus.BAD_REQUEST;
-        
+
         ErrorResponse response = new ErrorResponse(
                 LocalDateTime.now(),
                 status.value(),

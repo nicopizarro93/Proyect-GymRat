@@ -8,8 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.ms_leaderboard.dto.LeaderboardResponse;
-import com.example.ms_leaderboard.service.LeaderboardService;
+// ... existing code ...
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,8 +17,17 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class LeaderboardController {
 
+    /**
+     * Servicio que contiene la lógica para generar el ranking de atletas.
+     */
     private final LeaderboardService leaderboardService;
 
+    /**
+     * Obtiene el Top 10 de atletas para el ejercicio indicado.
+     *
+     * @param ejercicio nombre del ejercicio consultado.
+     * @return respuesta HTTP con la lista ordenada del leaderboard.
+     */
     @GetMapping("/{ejercicio}")
     public ResponseEntity<List<LeaderboardResponse>> obtenerPantallaTop10(@PathVariable("ejercicio") String ejercicio) {
         return ResponseEntity.ok(leaderboardService.generarTop10(ejercicio));

@@ -6,10 +6,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
+/**
+ * Cliente Feign encargado de comunicarse con el microservicio de asistencias.
+ * Permite consultar el historial de asistencias de un atleta usando su RUT.
+ */
 @FeignClient(name = "ms-asistencia", path = "/api/v1/asistencias")
 public interface AsistenciaClient {
 
-    // Actualizamos a la ruta /historial que definimos en la refactorización de ms-asistencia
+    /**
+     * Obtiene las asistencias registradas para un atleta específico.
+     *
+     * @param rutAtleta RUT del atleta a consultar.
+     * @return lista de asistencias asociadas al atleta.
+     */
     @GetMapping("/historial/{rutAtleta}")
     List<Object> obtenerAsistenciasPorRut(@PathVariable("rutAtleta") String rutAtleta);
 }

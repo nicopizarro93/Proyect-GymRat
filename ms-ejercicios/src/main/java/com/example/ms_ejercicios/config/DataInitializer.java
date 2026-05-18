@@ -13,12 +13,25 @@ import com.example.ms_ejercicios.repository.EjercicioRepository;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Clase de configuración encargada de cargar datos iniciales
+ * en la base de datos al iniciar la aplicación.
+ */
 @Configuration
 @RequiredArgsConstructor
 public class DataInitializer {
 
+    /**
+     * Repositorio utilizado para consultar y guardar ejercicios.
+     */
     private final EjercicioRepository ejerciciorepository;
 
+    /**
+     * Bean que se ejecuta automáticamente al iniciar la aplicación.
+     * Inserta una lista de ejercicios predeterminados solo si la tabla está vacía.
+     *
+     * @return un CommandLineRunner que carga los datos iniciales.
+     */
     @Bean
     CommandLineRunner initData(){
         return args->{
@@ -33,11 +46,9 @@ public class DataInitializer {
                 new Ejercicio(null, "apertura en polea",GrupoMuscularEnum.PECHO,DificultadEnum.INTERMEDIO),
                 new Ejercicio(null, "apertura con mancuernas",GrupoMuscularEnum.PECHO,DificultadEnum.AVANZADO),
 
-
                 new Ejercicio(null, "jalon al pecho en polea",GrupoMuscularEnum.ESPALDA,DificultadEnum.INTERMEDIO),
                 new Ejercicio(null, "remo con mancuernas",GrupoMuscularEnum.ESPALDA,DificultadEnum.INTERMEDIO),
                 new Ejercicio(null, "remo con barra",GrupoMuscularEnum.ESPALDA,DificultadEnum.AVANZADO),
-
 
                 new Ejercicio(null, "vuelos laterales",GrupoMuscularEnum.HOMBRO,DificultadEnum.AVANZADO),
                 new Ejercicio(null, "press militar",GrupoMuscularEnum.HOMBRO,DificultadEnum.AVANZADO),
@@ -53,8 +64,6 @@ public class DataInitializer {
 
                 new Ejercicio(null, "elevacion de piernas",GrupoMuscularEnum.ABDOMEN,DificultadEnum.AVANZADO),
                 new Ejercicio(null, "crunch abdominal",GrupoMuscularEnum.ABDOMEN,DificultadEnum.PRINCIPIANTE)
-
-
             );
 
             ejerciciorepository.saveAll(ejercicios);

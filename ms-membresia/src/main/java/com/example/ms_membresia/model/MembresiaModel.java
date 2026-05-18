@@ -8,31 +8,52 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 
-@Entity // esta clase será una tabla en la base de datos
-@Table(name = "membresias") // Nombramos la tabla
+/**
+ * Entidad JPA que representa una membresía dentro del sistema.
+ * Cada registro almacena el plan contratado por un atleta, sus fechas de vigencia y su estado.
+ */
+@Entity
+@Table(name = "membresias")
 @Getter
 @Setter
-@NoArgsConstructor // crea un constructor vacío
-@AllArgsConstructor //crea un constructor con todos los datos
+@NoArgsConstructor
+@AllArgsConstructor
 public class MembresiaModel {
 
+    /**
+     * Identificador único de la membresía.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // El ID único
+    private Long id;
 
+    /**
+     * RUT del atleta dueño de la membresía.
+     */
     @Column(nullable = false)
-    private String rutAtleta; // El RUT del cliente
+    private String rutAtleta;
 
+    /**
+     * Tipo de plan contratado por el atleta.
+     */
     @Column(nullable = false)
-    private String tipoPlan; // Ej: "Mensual", "Trimestral", "Anual"
+    private String tipoPlan;
 
+    /**
+     * Fecha en que inicia la vigencia de la membresía.
+     */
     @Column(nullable = false)
-    private LocalDate fechaInicio; // Cuándo pagó/inició
+    private LocalDate fechaInicio;
 
+    /**
+     * Fecha en que finaliza la vigencia de la membresía.
+     */
     @Column(nullable = false)
-    private LocalDate fechaFin; // Cuándo se le vence
+    private LocalDate fechaFin;
 
+    /**
+     * Estado actual de la membresía, por ejemplo ACTIVA o VENCIDA.
+     */
     @Column(nullable = false)
-    private String estado; // Ej: "ACTIVA" o "VENCIDA"
-
+    private String estado;
 }

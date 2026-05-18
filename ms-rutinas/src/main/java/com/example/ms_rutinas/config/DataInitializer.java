@@ -12,12 +12,24 @@ import com.example.ms_rutinas.repository.RutinaRepository;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Configuración encargada de cargar rutinas iniciales en la base de datos.
+ * Solo inserta datos de ejemplo cuando el repositorio está vacío.
+ */
 @Configuration
 @RequiredArgsConstructor
 public class DataInitializer {
 
+    /**
+     * Repositorio utilizado para consultar y guardar rutinas.
+     */
     private final RutinaRepository rutinaRepository;
 
+    /**
+     * Inicializa rutinas predeterminadas al arrancar la aplicación.
+     *
+     * @return tarea que se ejecuta al iniciar el microservicio.
+     */
     @Bean
     CommandLineRunner initRutinas(){
         return args ->{

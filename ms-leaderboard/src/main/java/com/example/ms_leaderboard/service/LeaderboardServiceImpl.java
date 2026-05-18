@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 import java.util.Map;
 import org.springframework.stereotype.Service;
 import com.example.ms_leaderboard.client.AtletaClient;
@@ -17,18 +18,47 @@ import com.example.ms_leaderboard.repository.ConsultaLeaderboardRepository;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Implementación del servicio de leaderboard.
+ * Genera el Top 10 de atletas según las marcas aprobadas de un ejercicio.
+ */
 @Service
 @RequiredArgsConstructor
 public class LeaderboardServiceImpl implements LeaderboardService{
 
+    /**
+     * Cliente Feign utilizado para obtener marcas aprobadas desde ms-marcas.
+     */
     private final MarcaClient marcaClient;
+
+    /**
+     * Cliente Feign utilizado para obtener información de atletas desde ms-atletas.
+     */
     private final AtletaClient atletaClient;
+
+    /**
+     * Repositorio utilizado para registrar las consultas realizadas al leaderboard.
+     */
     private final ConsultaLeaderboardRepository repositorioVisitas;
+
+    /**
+     * Cliente Feign utilizado para validar ejercicios en ms-ejercicios.
+     */
     private final EjercicioClient ejercicioClient;
 
+    /**
+     * Genera el Top 10 de atletas para un ejercicio específico.
+     * Primero valida que el ejercicio exista, luego obtiene las marcas aprobadas,
+     * selecciona la mejor marca de cada atleta, ordena los resultados y registra la consulta.
+     *
+     * @param nombreEjercicio nombre del ejercicio para generar el ranking.
+     * @return lista con las diez mejores marcas ordenadas de mayor a menor peso.
+     * @throws IllegalArgumentException si el ejercicio no existe en el catálogo oficial.
+     * @throws RuntimeException si ocurre un error de comunicación con el catálogo de ejercicios.
+     */
     @Override
     public List<LeaderboardResponse> generarTop10(String nombreEjercicio) {
-        
+    
         try {
             ejercicioClient.obtenerEjercicioPorNombre(nombreEjercicio);
         } catch (feign.FeignException.NotFound e) {
@@ -38,6 +68,7 @@ public class LeaderboardServiceImpl implements LeaderboardService{
             // Si ms-ejercicios está apagado o falla
             throw new RuntimeException("Error de validación: No se pudo comunicar con el catálogo de ejercicios.");
         }
+
         // 1. Traer TODAS las marcas aprobadas de ese ejercicio
         List<MarcaDTO> marcas = marcaClient.obtenerMarcasAprobadas(nombreEjercicio);
 
@@ -72,7 +103,7 @@ public class LeaderboardServiceImpl implements LeaderboardService{
                 System.err.println("No se pudo obtener el nombre del atleta RUT: " + rut);
             }
 
-            top10.add(new LeaderboardResponse(posicion, rut, nombre, peso));
+            top10.add(new LeaderboardResponse(posicion, nombre, peso));
             posicion++;
         }
 

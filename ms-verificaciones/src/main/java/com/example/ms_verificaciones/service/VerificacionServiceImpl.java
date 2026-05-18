@@ -15,17 +15,40 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
+/**
+ * Implementación del servicio de verificaciones.
+ * Contiene la lógica de negocio para solicitar, revisar y listar
+ * verificaciones de marcas.
+ */
 @Service
 @RequiredArgsConstructor
 public class VerificacionServiceImpl implements VerificacionService {
 
+    /**
+     * Repositorio utilizado para guardar y consultar verificaciones.
+     */
     private final VerificacionRepository verificacionRepository;
+
+    /**
+     * Cliente Feign utilizado para comunicarse con el microservicio de marcas.
+     */
     private final MarcaClient marcaClient;
+
+    /**
+     * Cliente Feign utilizado para comunicarse con el microservicio de atletas.
+     */
     private final AtletaClient atletaClient;
 
-    // Cambiamos la firma para recibir el DTO
+    /**
+     * Registra una nueva solicitud de verificación para una marca.
+     * Valida que la marca exista y que, si la validación es por video,
+     * se entregue una URL válida.
+     *
+     * @param dto datos de la solicitud de verificación.
+     * @return verificación creada con estado PENDIENTE.
+     */
     public Verificacion solicitarVerificacion(VerificacionRequestDTO dto) {
-        
+    
         if (dto.getTipoValidacion() == TipoValidacion.VIDEO && 
            (dto.getUrlVideo() == null || dto.getUrlVideo().isBlank())) {
             throw new IllegalArgumentException("Debe proporcionar la URL del video.");
@@ -37,20 +60,29 @@ public class VerificacionServiceImpl implements VerificacionService {
             throw new RuntimeException("Error: La Marca/Levantamiento con ID " + dto.getIdMarca() + " no existe.");
         }
 
-        // Mapeo manual del DTO a la Entidad
         Verificacion verificacion = new Verificacion();
         verificacion.setRutAtleta(dto.getRutAtleta());
         verificacion.setIdMarca(dto.getIdMarca());
         verificacion.setTipoValidacion(dto.getTipoValidacion());
         verificacion.setUrlVideo(dto.getUrlVideo());
         verificacion.setEstado(EstadoValidacion.PENDIENTE);
-        
+    
         return verificacionRepository.save(verificacion);
     }
 
+    /**
+     * Revisa una solicitud de verificación existente.
+     * Aplica reglas de validación según el rol del evaluador:
+     * STAFF puede aprobar o rechazar directamente, mientras que MIEMBRO
+     * requiere lógica de votos para aprobar.
+     *
+     * @param id identificador de la solicitud.
+     * @param nuevoEstado nuevo estado que se desea asignar.
+     * @param rutValidador RUT del usuario que realiza la evaluación.
+     * @return verificación actualizada.
+     */
     @Override
     public Verificacion revisarVerificacion(Long id, EstadoValidacion nuevoEstado, String rutValidador) {
-        // ... (Todo tu código de lógica de votos se mantiene EXACTAMENTE igual hasta el paso 5) ...
         Verificacion verificacion = verificacionRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Error: La solicitud con ID " + id + " no existe."));
 
@@ -94,7 +126,6 @@ public class VerificacionServiceImpl implements VerificacionService {
 
         Verificacion guardada = verificacionRepository.save(verificacion);
 
-        // 5. Comunicar a ms-marcas usando el DTO
         if (guardada.getEstado() == EstadoValidacion.APROBADA || guardada.getEstado() == EstadoValidacion.RECHAZADA) {
             try {
                 EstadoUpdateRequestDTO estadoDto = new EstadoUpdateRequestDTO(guardada.getEstado().name());
@@ -107,6 +138,11 @@ public class VerificacionServiceImpl implements VerificacionService {
         return guardada;
     }
 
+    /**
+     * Obtiene todas las solicitudes de verificación registradas.
+     *
+     * @return lista completa de verificaciones.
+     */
     @Override
     public List<Verificacion> listarVerificaciones() {
         return verificacionRepository.findAll();
