@@ -62,10 +62,10 @@ public class EjercicioController {
     }
 
     @GetMapping("/nombre/{nombre}")
-    public ResponseEntity<?> buscarPorNombre(@PathVariable String nombre){
-        return ejercicioService.buscarPorNombre(nombre)
-            .map(ResponseEntity::ok)
-            .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<Ejercicio> buscarPorNombre(@PathVariable String nombre){
+        Ejercicio ejercicio = ejercicioService.buscarPorNombre(nombre);
+        return ResponseEntity.ok(ejercicio);
+
     }
     
 }
