@@ -1,10 +1,12 @@
 package com.example.ms_marcas.dto;
 
-import jakarta.validation.constraints.NotBlank;
+import com.example.ms_marcas.model.EstadoEnum;
+
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
 public class EstadoUpdateRequestDTO {
-    @NotBlank(message = "El estado no puede estar vacío")
-    private String nuevoEstado;
+    @NotNull(message = "El estado no puede estar vacío")
+    private EstadoEnum nuevoEstado;
 }

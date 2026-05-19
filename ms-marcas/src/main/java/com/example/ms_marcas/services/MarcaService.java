@@ -3,6 +3,7 @@ package com.example.ms_marcas.services;
 import java.util.List;
 
 import com.example.ms_marcas.dto.MarcaRequestDTO;
+import com.example.ms_marcas.model.EstadoEnum;
 import com.example.ms_marcas.model.Marca;
 
 public interface MarcaService {
@@ -12,6 +13,6 @@ public interface MarcaService {
     List<Marca> listarTodos();  
     Marca buscarPorId(Long id);
     List<Marca> obtenerMarcasAprobadasPorEjercicio(String nombreEjercicio);
-    Marca actualizarEstado(Long id, String nuevoEstado);
+    Marca actualizarEstado(Long id, EstadoEnum nuevoEstado);
     
 }

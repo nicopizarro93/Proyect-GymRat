@@ -28,5 +28,5 @@ public class Marca {
     private Double pesoLevantado;
 
     @Column(nullable = false)
-    private String estado;
+    private EstadoEnum estado;
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.example.ms_marcas.client.AtletaClient;
+import com.example.ms_marcas.model.EstadoEnum;
 import com.example.ms_marcas.model.Marca;
 import com.example.ms_marcas.repository.MarcaRepository;
 import com.example.ms_marcas.dto.MarcaRequestDTO;
@@ -37,7 +38,7 @@ public class MarcaServiceImpl implements MarcaService {
         nuevaMarca.setPesoLevantado(dto.getPesoLevantado());
         
         // 3. Regla de Negocio
-        nuevaMarca.setEstado("PENDIENTE");
+        nuevaMarca.setEstado(EstadoEnum.PENDIENTE);
         return marcaRepository.save(nuevaMarca);
     }
 
@@ -59,13 +60,13 @@ public class MarcaServiceImpl implements MarcaService {
 
     @Override
     public List<Marca> obtenerMarcasAprobadasPorEjercicio(String nombreEjercicio) {
-        return marcaRepository.findByNombreEjercicioAndEstadoOrderByPesoLevantadoDesc(nombreEjercicio, "APROBADA");
+        return marcaRepository.findByNombreEjercicioAndEstadoOrderByPesoLevantadoDesc(nombreEjercicio, EstadoEnum.APROBADA);
     }
 
     @Override
-    public Marca actualizarEstado(Long id, String nuevoEstado) {
+    public Marca actualizarEstado(Long id, EstadoEnum nuevoestado) {
         Marca marca = buscarPorId(id);
-        marca.setEstado(nuevoEstado);
+        marca.setEstado(nuevoestado);
         return marcaRepository.save(marca);
     }
 }
