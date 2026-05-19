@@ -39,6 +39,9 @@ public class RutinaServiceImpl implements RutinaService {
 
     @Override
     public void eliminarRutina(Long id) {
+        if (! rutinaRepository.existsById(id)){
+            throw new RuntimeException("no se encontro rutina con id: " + id);
+        }
         rutinaRepository.deleteById(id);
     }
 
