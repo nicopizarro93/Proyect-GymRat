@@ -60,7 +60,7 @@ public class MarcaServiceImpl implements MarcaService {
 
     @Override
     public List<Marca> obtenerMarcasAprobadasPorEjercicio(String nombreEjercicio) {
-        return marcaRepository.findByNombreEjercicioAndEstadoOrderByPesoLevantadoDesc(nombreEjercicio, "APROBADA");
+        return marcaRepository.findByNombreEjercicioAndEstadoOrderByPesoLevantadoDesc(nombreEjercicio, EstadoEnum.APROBADA);
     }
 
     @Override
