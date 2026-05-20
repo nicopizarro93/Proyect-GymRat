@@ -65,7 +65,7 @@ public class RutinaServiceImpl implements RutinaService {
 
        dto.setIdRutina(rutina.getIdRutina());
        dto.setNombreRutina(rutina.getNombreRutina());
-       dto.setDificultad(rutina.getDificultad().name());
+       dto.setDificultad(rutina.getDificultad());
        dto.setDias(rutina.getDias());
        dto.setEjercicios(ejercicios);
 
@@ -88,7 +88,7 @@ public class RutinaServiceImpl implements RutinaService {
             
             dto.setIdRutina(rutina.getIdRutina());
             dto.setNombreRutina(rutina.getNombreRutina());
-            dto.setDificultad(rutina.getDificultad().name());
+            dto.setDificultad(rutina.getDificultad());
             dto.setDias(rutina.getDias());
             dto.setEjercicios(ejercicios);
 
