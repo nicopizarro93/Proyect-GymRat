@@ -7,6 +7,9 @@ import com.example.ms_ejercicios.dto.EjercicioRequestDTO;
 import com.example.ms_ejercicios.model.Ejercicio;
 import com.example.ms_ejercicios.model.GrupoMuscularEnum;
 import com.example.ms_ejercicios.service.EjercicioService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import java.util.List;
@@ -21,10 +24,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RestController
 @RequestMapping("/api/v1/ejercicios")
 @RequiredArgsConstructor
+@Tag(name="Ejercicios", description = "Operaciones realcionadas con los ejercicios")
 public class EjercicioController {
 
     private final EjercicioService ejercicioService;
 
+    @Operation(summary = "Crear un nuevo ejercicio")
     @PostMapping
     public ResponseEntity<Ejercicio> crearEjercicio(@Valid @RequestBody EjercicioRequestDTO dto) {
         Ejercicio nuevoEjercicio = new Ejercicio();
@@ -37,24 +42,27 @@ public class EjercicioController {
         return ResponseEntity.status(HttpStatus.CREATED).body(ejercicioGuardado);
     }
 
+    @Operation(summary = "Buscar ejercicio por ID")
     @GetMapping("/{id}")
     public ResponseEntity<Ejercicio>buscarPorId(@PathVariable Long id) {
         Ejercicio ejercicio=ejercicioService.buscarPorId(id);
         return ResponseEntity.ok(ejercicio);
     }
 
+    @Operation(summary = "Listar todos los ejercicios")
     @GetMapping
     public ResponseEntity<List<Ejercicio>>listarEjercicios() {
         List<Ejercicio> ejercicios=ejercicioService.listarEjercicios();
         return ResponseEntity.ok(ejercicios);
     }
 
+    @Operation(summary = "Listar ejercicios segun grupo muscular")
     @GetMapping("/grupo/{grupoMuscular}")
     public ResponseEntity<List<Ejercicio>>listarPorGrupo(@PathVariable GrupoMuscularEnum grupoMuscular) {
         return ResponseEntity.ok(ejercicioService.listarPorGrupoMuscular(grupoMuscular));
     }
     
-    
+    @Operation(summary = "eliminar un ejercicio por ID")
     @DeleteMapping("/{id}")
     public ResponseEntity<?>eliminarEjercicio(@PathVariable Long id){
         ejercicioService.eliminarPorId(id);
