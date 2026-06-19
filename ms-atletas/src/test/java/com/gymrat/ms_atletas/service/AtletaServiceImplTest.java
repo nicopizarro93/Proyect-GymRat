@@ -1,8 +1,10 @@
 package com.gymrat.ms_atletas.service;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -46,54 +48,83 @@ class AtletaServiceImplTest {
     }
 
     @Test
-    @DisplayName("Debe encontrar y retornar un atleta cuando el RUT existe")
+    @DisplayName("buscarPorRut debe devolver atleta existente")
     void buscarPorRut_AtletaExiste_RetornaAtleta() {
-        // Arrange (Preparar): Le enseñamos al mock cómo debe comportarse
-        // Le decimos: "Cuando alguien llame a findByRut con este RUT, devuelve nuestro atletaMock"
         when(atletaRepository.findByRut("18357914-2")).thenReturn(Optional.of(atletaMock));
 
-        // Act (Actuar): Llamamos al método real de nuestro servicio
         Atleta resultado = atletaService.buscarPorRut("18357914-2");
 
-        // Assert (Afirmar): Verificamos que el resultado es el correcto
-        assertNotNull(resultado, "El atleta no debería ser nulo");
-        assertEquals("Nicolás Pizarro", resultado.getNombre(), "El nombre no coincide");
-        assertEquals(RolEnum.MIEMBRO, resultado.getRol(), "El rol no coincide");
-
-        // (Opcional) Verificamos que el servicio realmente consultó a la base de datos 1 vez
+        assertNotNull(resultado);
+        assertEquals("18357914-2", resultado.getRut());
+        assertEquals("Nicolás Pizarro", resultado.getNombre());
+        assertEquals(RolEnum.MIEMBRO, resultado.getRol());
         verify(atletaRepository, times(1)).findByRut("18357914-2");
     }
 
     @Test
-    @DisplayName("Debe lanzar RuntimeException cuando el RUT no existe")
-    void buscarPorRut_AtletaNoExiste_LanzaExcepcion() {
-        // Arrange: Enseñamos al mock a devolver "Vacío" simulando que no encontró nada
+    @DisplayName("buscarPorRut debe lanzar IllegalArgumentException cuando no existe atleta")
+    void buscarPorRut_AtletaNoExiste_LanzaIllegalArgumentException() {
         when(atletaRepository.findByRut("99999999-9")).thenReturn(Optional.empty());
 
-        // Act & Assert: Verificamos que el servicio lance el error correcto
-        RuntimeException excepcion = assertThrows(
-            RuntimeException.class, 
-            () -> atletaService.buscarPorRut("99999999-9")
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> atletaService.buscarPorRut("99999999-9")
         );
 
-        // Verificamos que el mensaje sea exactamente el que programaste
-        assertEquals("Atleta no encontrado", excepcion.getMessage());
+        assertTrue(exception.getMessage().contains("No se encontró un atleta con ese RUT"));
+        verify(atletaRepository, times(1)).findByRut("99999999-9");
     }
 
     @Test
-    @DisplayName("Debe guardar un atleta exitosamente")
+    @DisplayName("guardarAtleta debe persistir cuando no existe el RUT")
     void guardarAtleta_DatosValidos_RetornaAtletaGuardado() {
-        // Arrange: Cuando el repository intente guardar CUALQUIER objeto de tipo Atleta, devuelve el nuestro
+        when(atletaRepository.findByRut("18357914-2")).thenReturn(Optional.empty());
         when(atletaRepository.save(any(Atleta.class))).thenReturn(atletaMock);
 
-        // Act
         Atleta resultado = atletaService.guardarAtleta(atletaMock);
 
-        // Assert
-        assertNotNull(resultado.getId(), "El ID no debería ser nulo tras guardar");
+        assertNotNull(resultado);
         assertEquals("18357914-2", resultado.getRut());
-        
-        // Verificamos que el método save() del repositorio fue llamado exactamente 1 vez
+        verify(atletaRepository, times(1)).findByRut("18357914-2");
         verify(atletaRepository, times(1)).save(atletaMock);
+    }
+
+    @Test
+    @DisplayName("guardarAtleta debe fallar cuando el RUT ya está registrado")
+    void guardarAtleta_RutDuplicado_LanzaIllegalArgumentException() {
+        when(atletaRepository.findByRut("18357914-2")).thenReturn(Optional.of(atletaMock));
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> atletaService.guardarAtleta(atletaMock)
+        );
+
+        assertEquals("ya existe un atleta con ese RUT", exception.getMessage());
+        verify(atletaRepository, times(1)).findByRut("18357914-2");
+        verify(atletaRepository, never()).save(any(Atleta.class));
+    }
+
+    @Test
+    @DisplayName("listarTodos debe devolver todos los atletas")
+    void listarTodos_RetornaListaDeAtletas() {
+        when(atletaRepository.findAll()).thenReturn(List.of(atletaMock));
+
+        List<Atleta> resultado = atletaService.listarTodos();
+
+        assertNotNull(resultado);
+        assertEquals(1, resultado.size());
+        assertEquals("18357914-2", resultado.get(0).getRut());
+        verify(atletaRepository, times(1)).findAll();
+    }
+
+    @Test
+    @DisplayName("eliminarPorRut debe borrar el atleta existente")
+    void eliminarPorRut_AtletaExiste_EliminaAtleta() {
+        when(atletaRepository.findByRut("18357914-2")).thenReturn(Optional.of(atletaMock));
+
+        atletaService.eliminarPorRut("18357914-2");
+
+        verify(atletaRepository, times(1)).findByRut("18357914-2");
+        verify(atletaRepository, times(1)).delete(atletaMock);
     }
 }

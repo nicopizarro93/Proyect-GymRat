@@ -10,29 +10,17 @@ import com.gymrat.ms_atletas.dto.AtletaRequestDTO;
 import com.gymrat.ms_atletas.model.Atleta;
 import com.gymrat.ms_atletas.services.AtletaService;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/v1/atletas")
 @RequiredArgsConstructor
-@Tag(name = "atletas", description = "Endpoints para gestionar atletas")
-@ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "atleta registrado exitosamente"),
-        @ApiResponse(responseCode = "400", description = "Error de validación"),
-        @ApiResponse(responseCode = "404", description = "Atleta no encontrado en el sistema")
-    })
 public class AtletaController {
 
     private final AtletaService atletaService;
 
-    @Operation(summary = "Registrar nuevos atletas", description = "crea un nuevo atleta y se agrega a la base de datos")
-    
     @PostMapping
     public ResponseEntity<Atleta> crearAtleta(@Valid @RequestBody AtletaRequestDTO dto) {
         // Mapeamos manualmente el DTO a la Entidad
@@ -46,16 +34,14 @@ public class AtletaController {
         return ResponseEntity.status(HttpStatus.CREATED).body(atletaGuardado);
     }
 
-    @Operation(summary = "obtener atleta por rut", description = "se obtiene el atleta ingresando el rut como parametro en la url")
     @GetMapping("/{rut}")
-    public ResponseEntity<Atleta> obtenerPorRut(@Parameter(description = "Rut del atleta a buscar")@PathVariable String rut) {
+    public ResponseEntity<Atleta> obtenerPorRut(@PathVariable String rut) {
         Atleta atleta = atletaService.buscarPorRut(rut);
         return ResponseEntity.ok(atleta);
     }
 
     @GetMapping
     public ResponseEntity<List<Atleta>> listarAtletas() {
-        // Cambiamos el <?> por <List<Atleta>> para ser más estrictos con lo que devolvemos
         return ResponseEntity.ok(atletaService.listarTodos());
     }
 
