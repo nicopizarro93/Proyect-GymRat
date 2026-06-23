@@ -69,6 +69,7 @@ public class EjercicioController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Buscar ejercicio por nombre exacto")
     @GetMapping("/nombre/{nombre}")
     public ResponseEntity<Ejercicio> buscarPorNombre(@PathVariable String nombre){
         Ejercicio ejercicio = ejercicioService.buscarPorNombre(nombre);
