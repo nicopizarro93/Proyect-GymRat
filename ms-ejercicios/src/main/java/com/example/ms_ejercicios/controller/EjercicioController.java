@@ -9,6 +9,8 @@ import com.example.ms_ejercicios.model.GrupoMuscularEnum;
 import com.example.ms_ejercicios.service.EjercicioService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +32,10 @@ public class EjercicioController {
     private final EjercicioService ejercicioService;
 
     @Operation(summary = "Crear un nuevo ejercicio")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Ejercicio creado exitosamente"),
+        @ApiResponse(responseCode = "400", description = "Datos inválidos en el DTO")
+    })
     @PostMapping
     public ResponseEntity<Ejercicio> crearEjercicio(@Valid @RequestBody EjercicioRequestDTO dto) {
         Ejercicio nuevoEjercicio = new Ejercicio();
